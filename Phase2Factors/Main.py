@@ -12,8 +12,10 @@ py.sign_in('sigamani1982','lrix3k0xxv')
 
 #m1.getMarketsAnalyzerOutput('Identity')
 
-m1.makePercentiles()
+#m1.makePercentiles()
 #m1.makeCoverage()
+#m1.getCorrelationOfReturns('UNITED KINGDOM')
+m1.makeTrendingStat('Regularity_12Month')
 
 #stat = ['Return_10Year', 'Return_1Year', 'TrackingError','TrackingError_2Year','StdDev','StdDev_2Year','StyleBeta',
 #	   'Regularity_3Month','Regularity_6Month','Regularity_12Month','Identity']

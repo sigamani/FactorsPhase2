@@ -10,7 +10,6 @@ import xlwt
 import os
 import scipy.stats as st
 import plotly.figure_factory as FF
-#from plotly.figure_factory import FigureFactory as FF
 import csv 
 import re
 import datetime
@@ -20,6 +19,72 @@ from datetime import datetime, timedelta
 from calendar import monthrange
 
 
+
+def getCorrelationOfReturns(country):
+
+    dir = r"C:\\Users\\michael\\Desktop\\SRMA2\\"
+
+    factors = ['CAEY', 'InversePEG', 'InversePEGY', 'Net Buyback Yld', 'Net Dbt Paydown Yld',
+               'Net Payout Yld', 'Asset Growth 3yr', 'Asset Growth 5yr',
+               'Capex Growth 3yr', 'Capex Growth 5yr', 'Historic Dividend Growth', 
+               'IBES ROE','IBES 12M Fcast R 3M', 'IBES 12M Fcast R 1M', 
+               'Stable Ergs Gr 5yr', 'Stable Sales Gr 5yr',
+               'Daily 1yr Vol', 'Mmntm 12-1','Trading Turnover 3mth',
+               'Interest Coverage Ratio (ex-Fin)', 'Current Ratio (ex-Fin)', 'Quick Ratio (ex-Fin)']
+
+
+          
+    nfactors = len(factors)        
+    arr = []
+
+    for j in range(nfactors):    
+
+        factor = factors[j].replace(" (*)","")
+        file = dir + "Michael Style 50-100 " + factor + " " + country + " MC M1 200705 to 201704 Dec.xlsx"
+
+
+        book=xlrd.open_workbook(file)                         
+        sheet=book.sheet_by_name('Return Data')
+
+        list = []
+        for i in range(5,123):
+            value = sheet.cell_value(12,i)
+            list.append(value)
+
+        arr.append([])
+        arr[j].append(list)
+    
+
+    results = []        
+    for k in range(nfactors):
+
+        results.append([])
+        for l in range(nfactors):
+                    
+            corr = np.corrcoef(arr[k],arr[l])
+            temp = corr[0,1]
+            temp2 = round(temp,2)
+            results[k].append(temp2)
+
+
+    fig = FF.create_annotated_heatmap(x = factors, y = factors, z=results)
+    layout = go.Layout(
+    title=country,
+    xaxis=dict(ticks='', ticksuffix='', side='bottom'),
+        width=350,
+        height=300,
+        margin=go.Margin(
+        l=180,
+        r=80,
+        b=100,
+        t=100,
+        pad=4
+        ),
+    autosize=False          
+    )
+
+
+    py.iplot(fig, filename=country+'-Correlation',layout=layout)
 
 
 def getMarketsAnalyzerOutput(s):
@@ -253,6 +318,75 @@ def makePercentiles():
         py.iplot(fig, filename=factorname)
         data = []
 
+def makeTrendingStat(s):
+
+
+    dir = r"C:\\Users\\michael\\Desktop\\SRMA2\\"
+
+    factors = ['CAEY', 'InversePEG', 'InversePEGY', 'Net Buyback Yld', 'Net Dbt Paydown Yld',
+               'Net Payout Yld', 'Asset Growth 3yr', 'Asset Growth 5yr',
+               'Capex Growth 3yr', 'Capex Growth 5yr', 'Historic Dividend Growth', 
+               'IBES ROE','IBES 12M Fcast R 3M', 'IBES 12M Fcast R 1M', 
+               'Stable Ergs Gr 5yr', 'Stable Sales Gr 5yr',
+               'Daily 1yr Vol', 'Mmntm 12-1','Trading Turnover 3mth',
+               'Interest Coverage Ratio (ex-Fin)', 'Current Ratio (ex-Fin)', 'Quick Ratio (ex-Fin)']
+
+
+    countries = ['UNITED STATES','CHINA', 'JAPAN', 'UNITED KINGDOM','SWITZERLAND', 'GERMANY', 'HONG KONG',
+                 'FRANCE', 'CANADA', 'AUSTRALIA', 'NETHERLANDS', 'SOUTH AFRICA', 'SINGAPORE']
+
+    if (s == 'Regularity_3Month'):
+        plottitle = '3 Month Regularity'
+        y=21        
+        x=8
+        sd=0.183
+        rounddp=2
+        percent=1
+    if (s == 'Regularity_6Month'):
+        plottitle = '6 Month Regularity'
+        y=22
+        x=8
+        sd=0.289
+        rounddp=2
+        percent=1
+    if (s == 'Regularity_12Month'):
+        plottitle = '12 Month Regularity'
+        y=23
+        x=8
+        sd=0.428
+        rounddp=2
+        percent=1
+
+
+    corr = [] 
+    for i in range(len(factors)):
+
+            corr.append([])
+            for coun in countries:
+
+                factor = factors[i].replace(" (*)","")
+
+                file = dir + "Michael Style 50-100 " + factor + " " + coun + " MC M1 200705 to 201704 Dec.xlsx"
+                book=xlrd.open_workbook(file)                         
+                sheet=book.sheet_by_name('Style Graph')
+                value = sheet.cell_value(y,x)
+               
+                if (s == 'Regularity_3Month' or s == 'Regularity_6Month' or s == 'Regularity_12Month'):
+                    z_score = value/sd
+                    p_value = sps.norm.sf(abs(z_score))
+
+                    if value > 0:
+
+                        corr[i].append(1 - (2*p_value))    
+                    if value < 0:
+
+                        corr[i].append(-1+ (2*p_value))
+                else:
+                    corr[i].append(value*percent)
+
+    fig = FF.create_annotated_heatmap(x = countries, y = factors, z=np.round(corr,rounddp))
+
+    py.plot(fig, filename=s+'_Trending')
 
 
 
