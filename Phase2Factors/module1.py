@@ -403,6 +403,7 @@ def makeTrendingStat(s):
 
     #fig = go.Figure(data=data, layout=layout)
     #py.iplot(fig, filename=s+'_Trending')
+    #test 
 
     fig = FF.create_annotated_heatmap(x = countries, y = factors, z=np.round(result,rounddp))
     py.iplot(fig, filename=s+'_Trending', layout = layout)
