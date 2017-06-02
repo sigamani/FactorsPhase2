@@ -357,11 +357,10 @@ def makeTrendingStat(s):
         rounddp=2
         percent=1
 
-
-    corr = [] 
+    result = [] 
     for i in range(len(factors)):
 
-            corr.append([])
+            result.append([])
             for coun in countries:
 
                 factor = factors[i].replace(" (*)","")
@@ -377,18 +376,35 @@ def makeTrendingStat(s):
 
                     if value > 0:
 
-                        corr[i].append(1 - (2*p_value))    
+                        result[i].append(1 - (2*p_value))    
                     if value < 0:
 
-                        corr[i].append(-1+ (2*p_value))
+                        result[i].append(-1+ (2*p_value))
                 else:
-                    corr[i].append(value*percent)
-
-    fig = FF.create_annotated_heatmap(x = countries, y = factors, z=np.round(corr,rounddp))
-
-    py.plot(fig, filename=s+'_Trending')
+                    result[i].append(value*percent)
 
 
+    data = FF.create_annotated_heatmap(x = countries, y = factors, z=np.round(result,rounddp))
 
+    layout = go.Layout(
+        autosize=False,
+        width=350,
+        height=300,
+        margin=go.Margin(
+            l=1800,
+            r=60,
+            b=100,
+            t=100,
+            pad=4
+        ),
+        paper_bgcolor='#7f7f7f',
+        plot_bgcolor='#c7c7c7'
+    )
 
+    #fig = go.Figure(data=data, layout=layout)
+    #py.iplot(fig, filename=s+'_Trending')
 
+    fig = FF.create_annotated_heatmap(x = countries, y = factors, z=np.round(result,rounddp))
+    py.iplot(fig, filename=s+'_Trending', layout = layout)
+
+   
