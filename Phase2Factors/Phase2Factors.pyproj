@@ -29,6 +29,9 @@
     <Compile Include="module1.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MonthEndChecks.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="{0a7097df-ebc0-4152-94e4-7a75ec9f327b}\2.7" />

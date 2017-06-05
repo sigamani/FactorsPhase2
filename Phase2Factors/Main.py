@@ -1,6 +1,7 @@
 ﻿import plotly
 import plotly.plotly as py
 import module1 as m1
+import MonthEndChecks as mec
 
 #plotly.tools.set_credentials_file(username='michael.sigamani_sr', api_key='16jtbqurle')
 
@@ -15,7 +16,7 @@ py.sign_in('sigamani1982','lrix3k0xxv')
 #m1.makePercentiles()
 #m1.makeCoverage()
 #m1.getCorrelationOfReturns('UNITED KINGDOM')
-m1.makeTrendingStat('Regularity_12Month')
+#m1.makeTrendingStat('Regularity_12Month')
 
 #stat = ['Return_10Year', 'Return_1Year', 'TrackingError','TrackingError_2Year','StdDev','StdDev_2Year','StyleBeta',
 #	   'Regularity_3Month','Regularity_6Month','Regularity_12Month','Identity']
@@ -23,3 +24,8 @@ m1.makeTrendingStat('Regularity_12Month')
 #for s in stat:
 
 #    m1.getMarketsAnalyzerOutput(s)
+
+
+
+mec.doCountryDataCheck(1.0)
+
